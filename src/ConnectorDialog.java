@@ -1,7 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Properties;
 
 import javax.swing.JButton;
@@ -11,9 +10,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class ConnectorDialog extends JDialog implements ActionListener {
+public class ConnectorDialog extends JDialog{
 	
 	Properties dbProperties;
+	
+	boolean isCancelled = false;
 	
 	JLabel hostLBL = new JLabel("Host");
 	JTextField host = new JTextField();
@@ -21,7 +22,7 @@ public class ConnectorDialog extends JDialog implements ActionListener {
 	JLabel portLBL = new JLabel("Port");
 	JTextField port = new JTextField();
 	
-	JLabel dbNameLBL = new JLabel("dbName");
+	JLabel dbNameLBL = new JLabel("Database_Name");
 	JTextField dbName = new JTextField();
 	
 	JLabel userLBL = new JLabel("User");
@@ -37,7 +38,13 @@ public class ConnectorDialog extends JDialog implements ActionListener {
 	{
 		super(owner, title, true);
 		
-		setSize(400,400);
+		setSize(400,250);
+		
+		dbProperties = p;
+		
+		submitBTN.addActionListener(this::performOperation);
+		
+		cancelBTN.addActionListener(this::performOperation);
 		
 		JPanel dataPanel = new JPanel();
 		
@@ -67,8 +74,21 @@ public class ConnectorDialog extends JDialog implements ActionListener {
 		add(buttonPanel,BorderLayout.SOUTH);
 	}
 
-	public void actionPerformed(ActionEvent e)
+	private void performOperation(ActionEvent e)
 	{
+		if(e.getSource() == cancelBTN)
+		{
+			this.isCancelled = true;
+		}
+		dispose();
+	}
+
+	public Properties getProps() {
+		dbProperties.setProperty("db_name", dbName.getText());
+		dbProperties.setProperty("db_host", host.getText());
+		dbProperties.setProperty("db_port", port.getText());
+		dbProperties.setProperty("db_user", user.getText());
 		
+		return dbProperties;
 	}
 }
