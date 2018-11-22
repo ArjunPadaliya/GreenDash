@@ -21,7 +21,10 @@ public class Main {
 		if(!conn.connect())
 			System.exit(1);
 		
+		DatabasePanel dbPanel = new DatabasePanel(conn);
+		
 		main.setSize(800,600);
+		main.add(dbPanel);
 		main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		main.setVisible(true);
 	}
