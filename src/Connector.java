@@ -45,4 +45,8 @@ public class Connector {
 	public ResultSet executeQuery(String query) throws SQLException {
 		return st.executeQuery(query);
 	}
+	
+	public void executeUpdate(String query) throws SQLException{
+		st.executeUpdate(query);
+	}
 }

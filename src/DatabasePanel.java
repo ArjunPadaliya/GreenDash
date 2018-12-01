@@ -2,6 +2,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.swing.JPanel;
@@ -46,23 +47,31 @@ public class DatabasePanel extends JPanel {
 		
 		String query = sqlInput.getText();
 		try {
-			ResultSet resultSet = conn.executeQuery(query);
-			
-			ResultSetMetaData data = resultSet.getMetaData();
-			
-			for(int i=1; i<data.getColumnCount(); i++)
+			if (query.startsWith("create") || query.startsWith("Create") || query.startsWith("CREATE") || query.startsWith("drop") || query.startsWith("Drop") || query.startsWith("DROP") || query.startsWith("UPDATE") || query.startsWith("Update") || query.startsWith("update") || query.startsWith("INSERT") || query.startsWith("Insert") || query.startsWith("insert")|| query.startsWith("DELETE") || query.startsWith("Delete") || query.startsWith("delete"))
 			{
-				model.addColumn(data.getColumnName(i));
+				conn.executeUpdate(query);
 			}
 			
-			while(resultSet.next())
+			else if(query.startsWith("select") || query.startsWith("Select") || query.startsWith("SELECT"))
 			{
-				String[] gottenData = new String[data.getColumnCount()];
-				for(int i=0; i<data.getColumnCount(); i++)
+				ResultSet resultSet = conn.executeQuery(query);
+				
+				ResultSetMetaData data = resultSet.getMetaData();
+				
+				for(int i=1; i<data.getColumnCount(); i++)
 				{
-					gottenData[i] = resultSet.getString(i+1);
+					model.addColumn(data.getColumnName(i));
 				}
-				model.addRow(gottenData);
+				
+				while(resultSet.next())
+				{
+					String[] gottenData = new String[data.getColumnCount()];
+					for(int i=0; i<data.getColumnCount(); i++)
+					{
+						gottenData[i] = resultSet.getString(i+1);
+					}
+					model.addRow(gottenData);
+				}
 			}
 		}
 		catch(SQLException exep)
